@@ -45,10 +45,14 @@ let getBooksPromise = new Promise((resolve, reject) => {
 
 function getBookByIsbnPromise(isbn) {
     return new Promise((resolve, reject) => {
-        resolve(books[isbn]);
+        const book = books[isbn];
+        if (book) {
+            resolve(JSON.stringify(book,null,4));
+        } else {
+            reject(`Book with ISBN ${isbn} not found.`);
+        }
     })
 }
-
 
 function getBookByAuthorPromise(author) {
     return new Promise((resolve, reject) => {
@@ -64,8 +68,6 @@ function getBookByTitlePromise(title) {
     })
 }
   
-  
-  
 // Get the book list available in the shop
 public_users.get('/',function (req, res) {
     getBooksPromise.then((response) => {
@@ -78,7 +80,7 @@ public_users.get('/',function (req, res) {
 public_users.get('/isbn/:isbn',function (req, res) {
     const isbn = req.params.isbn;
     getBookByIsbnPromise(isbn).then((response) => {
-        res.send(JSON.stringify(response));
+        res.send(response);
     });
  });
   
